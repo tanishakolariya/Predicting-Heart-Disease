@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Heart Disease Predictor", layout="wide")
 
 st.title("Heart Disease Prediction System")
-st.write("Predict heart disease risk using Machine Learning")
+st.write("Predict heart disease risk")
 
 st.divider()
 
@@ -23,11 +23,6 @@ def load_model():
         return None, str(e)
 
 model, error = load_model()
-
-if error:
-    st.error(f"Model loading failed: {error}")
-else:
-    st.success("Model loaded successfully")
 
 # ---------------- INPUT UI ----------------
 col1, col2 = st.columns(2)
