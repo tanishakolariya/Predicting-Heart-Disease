@@ -1,21 +1,23 @@
 import streamlit as st
 import numpy as np
 import joblib
+import os
 import matplotlib.pyplot as plt
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="Heart Disease Predictor", layout="wide")
 
-st.title("Heart Disease Prediction System")
+st.title("❤️ Heart Disease Prediction System")
 st.write("Predict the risk of heart disease using Machine Learning")
 
 st.divider()
 
-# ---------------- LOAD MODEL ----------------
+# ---------------- LOAD MODEL (SAFE) ----------------
 @st.cache_resource
 def load_model():
     try:
-        model = joblib.load("heart_model.joblib")
+        model_path = os.path.join(os.path.dirname(__file__), "heart_model.joblib")
+        model = joblib.load(model_path)
         return model, None
     except Exception as e:
         return None, str(e)
@@ -23,9 +25,9 @@ def load_model():
 model, error = load_model()
 
 if error:
-    st.error(f"Model loading failed: {error}")
+    st.error(f"❌ Model loading failed: {error}")
 else:
-    st.success("Model loaded successfully")
+    st.success("✅ Model loaded successfully")
 
 # ---------------- INPUT UI ----------------
 col1, col2 = st.columns(2)
@@ -69,6 +71,9 @@ if st.button("🔍 Predict Heart Disease Risk"):
                                     restecg, thalach, exang, oldpeak,
                                     slope, ca, thal]])
 
+            # Debug (helps if anything breaks)
+            st.write("Input shape:", input_data.shape)
+
             prediction = model.predict(input_data)
 
             # Safe probability
@@ -79,25 +84,28 @@ if st.button("🔍 Predict Heart Disease Risk"):
 
             # Result
             if prediction[0] == 1:
-                st.error("High Risk of Heart Disease")
+                st.error("🔴 High Risk of Heart Disease")
             else:
-                st.success("Low Risk of Heart Disease")
+                st.success("🟢 Low Risk of Heart Disease")
 
             st.write(f"### Risk Probability: {probability:.2f}")
 
-            # ---------------- GRAPH ----------------
-            fig, ax = plt.subplots()
-            labels = ["Low Risk", "High Risk"]
-            values = [1 - probability, probability]
+            # ---------------- GRAPH (SAFE) ----------------
+            try:
+                fig, ax = plt.subplots()
+                labels = ["Low Risk", "High Risk"]
+                values = [1 - probability, probability]
 
-            ax.bar(labels, values)
-            ax.set_ylabel("Probability")
-            ax.set_title("Prediction Result")
+                ax.bar(labels, values)
+                ax.set_ylabel("Probability")
+                ax.set_title("Prediction Result")
 
-            st.pyplot(fig)
+                st.pyplot(fig)
+            except Exception as e:
+                st.warning(f"Graph error: {e}")
 
         except Exception as e:
-            st.error(f" Prediction failed: {e}")
+            st.error(f"❌ Prediction failed: {e}")
 
 # ---------------- FOOTER ----------------
 st.divider()
