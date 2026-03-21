@@ -4,9 +4,6 @@
 ## 🚀 Live Demo
 https://predicting-heart-disease-7unhvcmmmu6j7eiwvk3gq4.streamlit.app/
 
-## 📂 GitHub Repository
-https://github.com/tanishakolariya/Predicting-Heart-Disease
-
 ---
 
 ## 📌 About the Project
